@@ -36,6 +36,8 @@ PROBS = {
     "mutation": 0.01
 }
 
+PARENTS = [0.01, 0.5, 0.99]
+
 
 def main():
 
@@ -139,7 +141,65 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
-    raise NotImplementedError
+    result = 1
+    
+    #no parents
+    for person in people:
+        person_info = people.get(person)
+        mother = person_info.get('mother')
+        father = person_info.get('father')
+
+
+        if not mother and not father:
+            #multiply for any number of genes
+            if person in one_gene:
+                gene_prob = PROBS.get("gene")[2]
+                has_treat = False
+                if person in have_trait:
+                    has_treat = True
+                
+                trait_chance = PROBS.get("trait")[2][has_treat]
+                
+                result = result * gene_prob * trait_chance
+            #one gene
+            elif person in two_genes:
+                gene_prob = PROBS.get("gene")[1]
+                has_treat = False
+                if person in have_trait:
+                    has_treat = True
+                
+                trait_chance = PROBS.get("trait")[1][has_treat]
+                
+                result = result * gene_prob * trait_chance
+            #no gene
+            else:
+                gene_prob = PROBS.get("gene")[0]
+                has_treat = False
+                if person in have_trait:
+                    has_treat = True
+                
+                trait_chance = PROBS.get("trait")[0][has_treat]
+                
+                result = result * gene_prob * trait_chance
+
+        elif mother and father:
+            mother_genes = 1 if mother in one_gene else 2 if mother in two_genes else 0
+            father_genes = 1 if father in one_gene else 2 if father in two_genes else 0
+            #calculate for 0 genes
+            if person not in one_gene and person not in two_genes:
+                not_from_mother = (1 - PARENTS[mother_genes])
+                not_from_father = (1 - PARENTS[father_genes])
+                gene_prob = not_from_mother * not_from_father
+
+                has_treat = False
+                if person in have_trait:
+                    has_treat = True
+                
+                trait_chance = PROBS.get("trait")[0][has_treat]
+
+                result = result * gene_prob * trait_chance
+        
+    return result
 
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
