@@ -1,0 +1,53 @@
+correct probability:
+[('Harry', 2, False), ('James', 0, True), ('Lily', 0, False)] : 0.00000032
+
+My app returns:
+[('Harry', 2, False), ('James', 0, True), ('Lily', 0, False)] : 0.00006387
+
+Manual Joint_probability calculation:
+Joint_probability = P('James', 0, True)*P('Lily', 0, False)*P('Harry', 2, False) 
+Joint_probability = = 0.0096*0.9504*0.000035 = 3.193344*^-7
+
+P('James', 0, True) = 0.96*0.01 = 0.0096
+P('Lily', 0, False) = 0.96*0.99 = 0.9504
+P('Harry', 2, False) = 0.0001*0.35 = 0.000035
+
+P('Harry', 2) = one_from_father * one_from_mother = 0.0001
+P(one_from_father) = 0.01
+P(one_from_mother) = 0.01
+
+****USERFUL DATA****
+
+PROBS = {
+
+    # Unconditional probabilities for having gene
+    "gene": {
+        2: 0.01,
+        1: 0.03,
+        0: 0.96
+    },
+
+    "trait": {
+
+        # Probability of trait given two copies of gene
+        2: {
+            True: 0.65,
+            False: 0.35
+        },
+
+        # Probability of trait given one copy of gene
+        1: {
+            True: 0.56,
+            False: 0.44
+        },
+
+        # Probability of trait given no gene
+        0: {
+            True: 0.01,
+            False: 0.99
+        }
+    },
+
+    # Mutation probability
+    "mutation": 0.01
+}
